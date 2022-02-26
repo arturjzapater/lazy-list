@@ -13,6 +13,18 @@ function* cycle(xs) {
 	}
 }
 
+function* iterate(x, fun) {
+	if (typeof fun != 'function') {
+		throw new TypeError(`Expected function, but found ${typeof fun}`)
+	}
+
+	let curr = x
+	while (true) {
+		yield curr
+		curr = fun(curr)
+	}
+}
+
 function* of(xs) {
 	if (!Array.isArray(xs)) {
 		throw new TypeError(`Expected array, but found ${typeof xs}`)
@@ -23,5 +35,6 @@ function* of(xs) {
 
 module.exports = {
 	cycle,
+	iterate,
 	of,
 }

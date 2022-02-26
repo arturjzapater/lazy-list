@@ -2,9 +2,9 @@ const funs = require('./lib/functions')
 const helpers = require('./lib/helpers')
 const generators = require('./lib/generators')
 
-function LazyList(gen, xs) {
+function LazyList(gen, ...args) {
 	this.funs = []
-	this.generator = generators[gen](xs)
+	this.generator = gen(...args)
 }
 
 LazyList.prototype.filter = function(pred) {
@@ -54,6 +54,7 @@ LazyList.prototype.toArray = function() {
 }
 
 module.exports = {
-	cycle: xs => new LazyList('cycle', xs),
-	of: xs => new LazyList('of', xs),
+	cycle: xs => new LazyList(generators.cycle, xs),
+	iterate: (x, fun) => new LazyList(generators.iterate, x, fun),
+	of: xs => new LazyList(generators.of, xs),
 }
