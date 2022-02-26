@@ -25,6 +25,15 @@ LazyList.prototype.map = function(mapper) {
 	return this
 }
 
+LazyList.prototype.reject = function(pred) {
+	if (typeof pred != 'function') {
+		throw new TypeError(`Expected function, but found ${typeof pred}`)
+	}
+
+	this.funs.push(funs.reject(pred))
+	return this
+}
+
 LazyList.prototype.take = function(n) {
 	const result = []
 	let curr = this.generator.next()
