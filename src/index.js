@@ -35,6 +35,31 @@ LazyList.prototype.reject = function(pred) {
 	return this
 }
 
+LazyList.prototype.reduce = function(fun, init) {
+	if (this.infinite) {
+		throw new Error('Cannot call "reduce" on infinite generators')
+	}
+
+	let first = true
+	let result = init
+	let curr = this.generator.next()
+
+	while (!curr.done) {
+		const [ add, value ] = helpers.apply(curr.value, this.funs)
+		if (add && result === undefined && first) {
+			result = value
+			first = false
+		}
+		else if (add) {
+			result = fun(result, value)
+			first = false
+		}
+		curr = this.generator.next()
+	}
+
+	return result
+}
+
 LazyList.prototype.take = function(n) {
 	const result = []
 	let curr = this.generator.next()
