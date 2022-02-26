@@ -3,16 +3,8 @@ const helpers = require('./lib/helpers')
 const generators = require('./lib/generators')
 
 function LazyList(gen, xs) {
-	if (!Array.isArray(xs)) {
-		throw new TypeError(`Expected array, but found ${typeof xs}`)
-	}
-
 	this.funs = []
 	this.generator = generators[gen](xs)
-}
-
-LazyList.of = function(xs) {
-	return new LazyList('of', xs)
 }
 
 LazyList.prototype.filter = function(pred) {
@@ -59,4 +51,9 @@ LazyList.prototype.toArray = function() {
 		curr = this.generator.next()
 	}
 	return result
+}
+
+module.exports = {
+	cycle: xs => new LazyList('cycle', xs),
+	of: xs => new LazyList('of', xs),
 }
