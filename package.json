@@ -1,15 +1,15 @@
 {
   "name": "lazy-list",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Lazy lists for JavaScript",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Artur J. Zapater",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^7.32.0",
+    "eslint": "^8.10.0",
     "eslint-config-pixie": "^1.0.3"
   }
 }
