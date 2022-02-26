@@ -33,8 +33,17 @@ function* of(xs) {
 	for (let i = 0; i < xs.length; i++) yield xs[i]
 }
 
+function* repeat(fun) {
+	if (typeof fun != 'function') {
+		throw new TypeError(`Expected function, but found ${typeof fun}`)
+	}
+
+	while (true) yield fun()
+}
+
 module.exports = {
 	cycle,
 	iterate,
 	of,
+	repeat,
 }

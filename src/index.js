@@ -80,4 +80,5 @@ module.exports = {
 	cycle: xs => new LazyList(generators.cycle, xs),
 	iterate: (x, fun) => new LazyList(generators.iterate, x, fun),
 	of: xs => new LazyList(generators.of, xs),
+	repeat: fun => new LazyList(generators.repeat, fun),
 }
