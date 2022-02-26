@@ -1,4 +1,6 @@
 const apply = (x, [ first, ...funs ]) => {
+	if (!first) return [ true, x ]
+
 	const [ cont, value ] = first(x)
 
 	if (cont && funs[0]) return apply(value, funs)

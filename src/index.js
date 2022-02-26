@@ -41,6 +41,20 @@ LazyList.prototype.take = function(n) {
 	return result
 }
 
+LazyList.prototype.takeWhile = function(fun) {
+	const result = []
+	let curr = this.generator.next()
+
+	while (!curr.done) {
+		const [ add, value ] = helpers.apply(curr.value, this.funs)
+		if (!fun(value)) break
+		if (add) result.push(value)
+		curr = this.generator.next()
+	}
+
+	return result
+}
+
 LazyList.prototype.toArray = function() {
 	const result = []
 	let curr = this.generator.next()
