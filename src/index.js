@@ -65,6 +65,10 @@ LazyList.prototype.takeWhile = function(fun) {
 }
 
 LazyList.prototype.toArray = function() {
+	if (this.generator.toString() != generators.of.toString()) {
+		throw new Error('Cannot call "toArray" on generators other than "of"')
+	}
+
 	const result = []
 	let curr = this.generator.next()
 
