@@ -12,6 +12,7 @@ function* cycle(xs) {
 				: curr + 1
 	}
 }
+cycle.infinite = true
 
 function* iterate(x, fun) {
 	if (typeof fun != 'function') {
@@ -24,6 +25,7 @@ function* iterate(x, fun) {
 		curr = fun(curr)
 	}
 }
+iterate.infinite = true
 
 function* of(xs) {
 	if (!Array.isArray(xs)) {
@@ -32,6 +34,7 @@ function* of(xs) {
 
 	for (let i = 0; i < xs.length; i++) yield xs[i]
 }
+of.infinite = false
 
 function* repeat(fun) {
 	if (typeof fun != 'function') {
@@ -40,6 +43,7 @@ function* repeat(fun) {
 
 	while (true) yield fun()
 }
+repeat.infinite = true
 
 module.exports = {
 	cycle,

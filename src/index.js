@@ -4,6 +4,7 @@ const generators = require('./lib/generators')
 
 function LazyList(gen, ...args) {
 	this.funs = []
+	this.infinite = gen.infinite
 	this.generator = gen(...args)
 }
 
@@ -65,8 +66,8 @@ LazyList.prototype.takeWhile = function(fun) {
 }
 
 LazyList.prototype.toArray = function() {
-	if (this.generator.toString() != generators.of.toString()) {
-		throw new Error('Cannot call "toArray" on generators other than "of"')
+	if (this.infinite) {
+		throw new Error('Cannot call "toArray" on infinite generators')
 	}
 
 	const result = []
