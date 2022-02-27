@@ -5,6 +5,29 @@ function LazyList(gen, ...args) {
 	this.generator = gen(...args)
 }
 
+LazyList.prototype.chunkEvery = function(n) {
+	if (typeof n != 'number') {
+		throw new TypeError(`Expected number, but found ${typeof n}`)
+	}
+
+	const gen = this.generator
+	this.generator = (function* () {
+		let curr = gen.next()
+		while (!curr.done) {
+			const result = []
+			let index = 0
+			while (!curr.done && index < n) {
+				result.push(curr.value)
+				curr = gen.next()
+				index++
+			}
+			yield result
+		}
+	})()
+
+	return this
+}
+
 LazyList.prototype.filter = function(pred) {
 	if (typeof pred != 'function') {
 		throw new TypeError(`Expected function, but found ${typeof pred}`)
