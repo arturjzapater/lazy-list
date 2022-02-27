@@ -22,6 +22,20 @@ LazyList.prototype.filter = function(pred) {
 	return this
 }
 
+LazyList.prototype.intersperse = function(x) {
+	const gen = this.generator
+	this.generator = (function* () {
+		let curr = gen.next()
+		while (!curr.done) {
+			yield curr.value
+			yield x
+			curr = gen.next()
+		}
+	})()
+
+	return this
+}
+
 LazyList.prototype.map = function(mapper) {
 	if (typeof mapper != 'function') {
 		throw new TypeError(`Expected function, but found ${typeof mapper}`)
