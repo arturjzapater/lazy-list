@@ -1,9 +1,6 @@
-const funs = require('./lib/functions')
-const helpers = require('./lib/helpers')
 const generators = require('./lib/generators')
 
 function LazyList(gen, ...args) {
-	this.funs = []
 	this.infinite = gen.infinite
 	this.generator = gen(...args)
 }
@@ -13,7 +10,15 @@ LazyList.prototype.filter = function(pred) {
 		throw new TypeError(`Expected function, but found ${typeof pred}`)
 	}
 
-	this.funs.push(funs.filter(pred))
+	const gen = this.generator
+	this.generator = (function* () {
+		let curr = gen.next()
+		while (!curr.done) {
+			if (pred(curr.value)) yield curr.value
+			curr = gen.next()
+		}
+	})()
+
 	return this
 }
 
@@ -22,7 +27,15 @@ LazyList.prototype.map = function(mapper) {
 		throw new TypeError(`Expected function, but found ${typeof mapper}`)
 	}
 
-	this.funs.push(funs.map(mapper))
+	const gen = this.generator
+	this.generator = (function* () {
+		let curr = gen.next()
+		while (!curr.done) {
+			yield mapper(curr.value)
+			curr = gen.next()
+		}
+	})()
+
 	return this
 }
 
@@ -31,7 +44,15 @@ LazyList.prototype.reject = function(pred) {
 		throw new TypeError(`Expected function, but found ${typeof pred}`)
 	}
 
-	this.funs.push(funs.reject(pred))
+	const gen = this.generator
+	this.generator = (function* () {
+		let curr = gen.next()
+		while (!curr.done) {
+			if (!pred(curr.value)) yield curr.value
+			curr = gen.next()
+		}
+	})()
+
 	return this
 }
 
@@ -45,13 +66,12 @@ LazyList.prototype.reduce = function(fun, init) {
 	let curr = this.generator.next()
 
 	while (!curr.done) {
-		const [ add, value ] = helpers.apply(curr.value, this.funs)
-		if (add && result === undefined && first) {
-			result = value
+		if (result === undefined && first) {
+			result = curr.value
 			first = false
 		}
-		else if (add) {
-			result = fun(result, value)
+		else {
+			result = fun(result, curr.value)
 			first = false
 		}
 		curr = this.generator.next()
@@ -65,11 +85,8 @@ LazyList.prototype.take = function(n) {
 	let curr = this.generator.next()
 
 	while (!curr.done && n > 0) {
-		const [ add, value ] = helpers.apply(curr.value, this.funs)
-		if (add) {
-			result.push(value)
-			n--
-		}
+		result.push(curr.value)
+		n--
 		curr = this.generator.next()
 	}
 
@@ -81,9 +98,8 @@ LazyList.prototype.takeWhile = function(fun) {
 	let curr = this.generator.next()
 
 	while (!curr.done) {
-		const [ add, value ] = helpers.apply(curr.value, this.funs)
-		if (!fun(value)) break
-		if (add) result.push(value)
+		if (!fun(curr.value)) break
+		result.push(curr.value)
 		curr = this.generator.next()
 	}
 
@@ -99,8 +115,7 @@ LazyList.prototype.toArray = function() {
 	let curr = this.generator.next()
 
 	while (!curr.done) {
-		const [ add, value ] = helpers.apply(curr.value, this.funs)
-		if (add) result.push(value)
+		result.push(curr.value)
 		curr = this.generator.next()
 	}
 	return result
