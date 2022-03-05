@@ -26,5 +26,16 @@ tap.test('dropWhile', t => {
 		t.strictSame(result, [ 10 ])
 		t.end()
 	})
+
+	t.test('should not drop any more elements after first false predicate', t => {
+		const result =
+			LazyList
+				.of([ 2, 4, 6, 1, 2, 3, 4 ])
+				.dropWhile(x => x % 2 == 0)
+				.toArray()
+
+		t.strictSame(result, [ 1, 2, 3, 4 ])
+		t.end()
+	})
 	t.end()
 })
