@@ -12,6 +12,19 @@ tap.test('drop', t => {
 		t.strictSame(result, [ 11 ])
 		t.end()
 	})
+
+	t.test('should throw if input is not a number', t => {
+		const funs = [ 'potato', undefined, null, { a: 12 }, [ 1, 2, 3 ], () => null ]
+			.map(x =>  () =>
+				LazyList
+					.of([ 1, 2, 3 ])
+					.drop(x)
+					.toArray()
+			)
+
+		funs.forEach(fun => t.throws(fun))
+		t.end()
+	})
 	t.end()
 })
 
@@ -35,6 +48,19 @@ tap.test('dropWhile', t => {
 				.toArray()
 
 		t.strictSame(result, [ 1, 2, 3, 4 ])
+		t.end()
+	})
+
+	t.test('should throw if input is not a function', t => {
+		const funs = [ 15, 'potato', undefined, null, { a: 12 }, [ 1, 2, 3 ] ]
+			.map(x =>  () =>
+				LazyList
+					.of([ 1, 2, 3 ])
+					.dropWhile(x)
+					.toArray()
+			)
+
+		funs.forEach(fun => t.throws(fun))
 		t.end()
 	})
 	t.end()

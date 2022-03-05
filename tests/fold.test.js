@@ -22,6 +22,19 @@ tap.test('reduce', t => {
 		t.end()
 	})
 
+	t.test('should throw if input is not a function', t => {
+		const funs = [ 15, 'potato', undefined, null, { a: 12 }, [ 1, 2, 3 ] ]
+			.map(x =>  () =>
+				LazyList
+					.of([ 1, 2, 3 ])
+					.reduce(x)
+					.toArray()
+			)
+
+		funs.forEach(fun => t.throws(fun))
+		t.end()
+	})
+
 	t.test('should throw on infinite generators', t => {
 		const fun = () =>
 			LazyList
@@ -54,6 +67,19 @@ tap.test('take', t => {
 		t.strictSame(result.length, 3)
 		t.end()
 	})
+
+	t.test('should throw if input is not a number', t => {
+		const funs = [ 'potato', undefined, null, { a: 12 }, [ 1, 2, 3 ], () => null ]
+			.map(x =>  () =>
+				LazyList
+					.of([ 1, 2, 3 ])
+					.take(x)
+					.toArray()
+			)
+
+		funs.forEach(fun => t.throws(fun))
+		t.end()
+	})
 	t.end()
 })
 
@@ -75,6 +101,19 @@ tap.test('takeWhile', t => {
 				.takeWhile(x => x < 200)
 
 		t.strictSame(result.length, 3)
+		t.end()
+	})
+
+	t.test('should throw if input is not a function', t => {
+		const funs = [ 15, 'potato', undefined, null, { a: 12 }, [ 1, 2, 3 ] ]
+			.map(x =>  () =>
+				LazyList
+					.of([ 1, 2, 3 ])
+					.takeWhile(x)
+					.toArray()
+			)
+
+		funs.forEach(fun => t.throws(fun))
 		t.end()
 	})
 	t.end()

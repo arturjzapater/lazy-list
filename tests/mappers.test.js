@@ -23,6 +23,19 @@ tap.test('chunkEvery', t => {
 		t.strictSame(result, [ [ 1, 2, 3 ], [ 4, 5 ] ])
 		t.end()
 	})
+
+	t.test('should throw if input is not a number', t => {
+		const funs = [ 'potato', undefined, null, { a: 12 }, [ 1, 2, 3 ], () => null ]
+			.map(x =>  () =>
+				LazyList
+					.of([ 1, 2, 3 ])
+					.chunkEvery(x)
+					.toArray()
+			)
+
+		funs.forEach(fun => t.throws(fun))
+		t.end()
+	})
 	t.end()
 })
 
@@ -46,6 +59,30 @@ tap.test('flatMap', t => {
 				.toArray()
 
 		t.strictSame(result, [ [ 1 ], [ 2 ], [ 3 ] ])
+		t.end()
+	})
+
+	t.test('should not flatten if element is not an array', t => {
+		const result =
+			LazyList
+				.of([ 1, 2, 3 ])
+				.flatMap(x => x + 1)
+				.toArray()
+
+		t.strictSame(result, [ 2, 3, 4 ])
+		t.end()
+	})
+
+	t.test('should throw if input is not a function', t => {
+		const funs = [ 15, 'potato', undefined, null, { a: 12 }, [ 1, 2, 3 ] ]
+			.map(x =>  () =>
+				LazyList
+					.of([ 1, 2, 3 ])
+					.flatMap(x)
+					.toArray()
+			)
+
+		funs.forEach(fun => t.throws(fun))
 		t.end()
 	})
 	t.end()
@@ -74,6 +111,19 @@ tap.test('map', t => {
 				.toArray()
 
 		t.strictSame(result, [ 2, 3, 4 ])
+		t.end()
+	})
+
+	t.test('should throw if input is not a function', t => {
+		const funs = [ 15, 'potato', undefined, null, { a: 12 }, [ 1, 2, 3 ] ]
+			.map(x =>  () =>
+				LazyList
+					.of([ 1, 2, 3 ])
+					.map(x)
+					.toArray()
+			)
+
+		funs.forEach(fun => t.throws(fun))
 		t.end()
 	})
 	t.end()
