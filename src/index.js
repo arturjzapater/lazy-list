@@ -119,8 +119,8 @@ LazyList.prototype.intersperse = function(x) {
 		let curr = gen.next()
 		while (!curr.done) {
 			yield curr.value
-			yield x
 			curr = gen.next()
+			if (!curr.done) yield x
 		}
 	})()
 
